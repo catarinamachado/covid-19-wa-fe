@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="COVID-19 World Analyser">
+    <title>COVID-19 World Analyser</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="css/mdb.min.css">
+    <!-- MDBootstrap Simple Charts  -->
+    <link href="css/addons-pro/simple-charts.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row space-top-2">
+            <div class="col-md-12 d-flex justify-content-center">
+                <h1>COVID-19 World Analyser</h1>
+            </div>
+        </div>
+        <div class="row space-top-7 space-left-7">
+            <!-- INICIO TABELA ESQUERDA -->
+            <div class="col-md-3 d-flex justify-content-center">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                          <th scope="col"></th>
+                          <th scope="col">Nome</th>
+                          <th scope="col">Total infetados</th>
+                        </tr>
+                      </thead>
+                    <tbody>
+                        <tr class="m-0">
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                                </div>
+                            </td>
+                            <td class="align-middle">Portugal</td>
+                            <td class="align-middle">1000</td>
+                        </tr>
+                        <tr class="m-0">
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                                </div>
+                            </td>
+                            <td class="align-middle">Itália</td>
+                            <td class="align-middle">2000</td>
+                        </tr>
+                        <tr class="m-0">
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                                </div>
+                            </td>
+                            <td class="align-middle">Espanha</td>
+                            <td class="align-middle">1000</td>
+                        </tr>
+                        <tr class="m-0">
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                                </div>
+                            </td>
+                            <td class="align-middle">Alemanha</td>
+                            <td class="align-middle">1000</td>
+                        </tr>
+                        <tr class="m-0">
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                                </div>
+                            </td>
+                            <td class="align-middle">Suiça</td>
+                            <td class="align-middle">1000</td>
+                        </tr>
+                        <tr class="m-0">
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                                </div>
+                            </td>
+                            <td class="align-middle">Dinamarca</td>
+                            <td class="align-middle">1000</td>
+                        </tr>
+                        <tr class="m-0">
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                                </div>
+                            </td>
+                            <td class="align-middle">França</td>
+                            <td class="align-middle">1000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- FIM TABELA ESQUERDA -->
+
+            <!-- INICIO GRAFICOS CENTRAIS -->
+            <div class="col-md-5 d-flex justify-content-center align-middle">
+                <canvas id="lineChart"></canvas>
+            </div>
+            <!-- FIM GRAFICOS CENTRAIS -->
+
+            <!-- INICIO MAPA MUNDO -->
+            <div class="col-md-4 d-flex justify-content-center space-right-7">
+                <img src="img/world-map.png" class="img-fluid reduce-image-80">
+            </div>
+            <!-- FIM MAPA MUNDO -->
+        </div>
+
+        <!-- INICIO TABELA BOTTOM -->
+        <div class="row justify-content-center">
+            <div class="col-md-4 justify-content-center">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                          <th scope="col">Total infetados</th>
+                          <th scope="col">+Hoje</th>
+                          <th scope="col">Recuperados</th>
+                          <th scope="col">Mortes</th>
+                        </tr>
+                      </thead>
+                    <tbody>
+                        <tr class="m-0">
+                            <td class="align-middle">100000</td>
+                            <td class="align-middle">200</td>
+                            <td class="align-middle">1000</td>
+                            <td class="align-middle">10</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- FIM TABELA BOTTOM -->
+    </div>
+
+    <!-- BEGIN FOOTER-->
+    <footer class="justify-content-right">
+        <div class="fixed-bottom space-bottom-1 space-right-3">
+            Data
+        </div>
+    </footer>
+    <!-- END FOOTER -->
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- MDBootstrap Simple Charts  -->
+    <script type="text/javascript" src="js/addons-pro/simple-charts.min.js"></script>
+    <!-- Custom scripts -->
+    <script  type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,75 @@
+
+.space-top-1 {
+  padding-top: 1%;
+}
+
+.space-top-2 {
+  padding-top: 2%;
+}
+
+.space-top-3-5 {
+  padding-top: 3.5%;
+}
+
+.space-top-4 {
+  padding-top: 4%;
+}
+
+.space-top-7 {
+  padding-top: 7%;
+}
+
+.space-bottom-1 {
+  padding-bottom: 1%;
+}
+
+.space-bottom-2 {
+  padding-bottom: 2%;
+}
+
+.space-bottom-3 {
+  padding-bottom: 3%;
+}
+
+
+.space-bottom-4 {
+  padding-bottom: 4%;
+}
+
+.space-bottom-5 {
+  padding-bottom: 5%;
+}
+
+.space-bottom-7 {
+  padding-bottom: 7%;
+}
+
+.space-left-7 {
+    padding-left: 7%;
+}
+
+.space-right-7 {
+  padding-right: 7%;
+}
+
+.space-right-3 {
+  padding-right: 3%;
+}
+
+.justify-content-center {
+    align-content: center;
+    text-align: center;
+}
+
+.justify-content-right {
+  text-align: right;
+}
+
+.reduce-image-80 {
+  max-width: 80% !important;
+  height: auto !important;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
