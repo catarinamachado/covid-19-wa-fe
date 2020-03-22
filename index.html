@@ -109,7 +109,24 @@
 
             <!-- INICIO GRAFICOS CENTRAIS -->
             <div class="col-md-5 d-flex justify-content-center align-middle">
-                <canvas id="lineChart"></canvas>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="lineChart"></canvas>
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Total infetados/dia
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Mortes/dia</a>
+                                <a class="dropdown-item" href="#">Recuperados/dia</a>
+                                <a class="dropdown-item" href="#">Taxa de Crescimento/dia</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- FIM GRAFICOS CENTRAIS -->
 
