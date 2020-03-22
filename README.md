@@ -1,1 +1,1 @@
-# covid-19-world-analyse-frontend
+# COVID-19 World Analyser Frontend
