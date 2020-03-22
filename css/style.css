@@ -73,3 +73,7 @@
   margin-right: auto;
   width: 80%;
 }
+
+.carousel .carousel-indicators li {
+  background-color: grey;
+}
