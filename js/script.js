@@ -33,7 +33,7 @@ var myLineChart = new Chart(ctxL, {
     }
 });
 
-// Data atual
+// Data atual (Footer)
 var d = new Date();
 
 var month = d.getMonth()+1;
@@ -44,3 +44,17 @@ var output = (day<10 ? '0' : '') + day + '/' +
              d.getFullYear();
 
 $("#data").html(output);
+
+
+// Tabela dos Dados globais
+
+$.getJSON('http://localhost:8000/overallData', function(data) {
+        
+    var text = `Total: ${data.total}<br>
+                New today: ${data.newToday}<br>
+                Cured: ${data.cured}<br>
+                Deaths: ${data.deaths}`
+    console.log(text);
+    alert(text);
+});
+
