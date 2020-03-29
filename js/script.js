@@ -45,15 +45,10 @@ var output = (day<10 ? '0' : '') + day + '/' +
 
 $("#data").html(output);
 
-
 // Tabela dos Dados globais
-
 $.getJSON('http://localhost:8000/overallData', function(data) {
-    var text = `Total: ${data.total}<br>
-                New today: ${data.newToday}<br>
-                Cured: ${data.cured}<br>
-                Deaths: ${data.deaths}`
-    console.log(text);
-    alert(text);
+    $("#totalGlobal").html(data.total);
+    $("#hojeGlobal").html(data.newToday);
+    $("#curedGlobal").html(data.cured);
+    $("#deathsGlobal").html(data.deaths);
 });
-
