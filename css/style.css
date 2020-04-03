@@ -98,7 +98,6 @@ input[type="checkbox"] {
   background-color: grey;
 }
 
-
 .pagination > li > a
 {
     background-color: white;
@@ -108,22 +107,23 @@ input[type="checkbox"] {
 .pagination > li > a:focus,
 .pagination > li > a:hover,
 .pagination > li > span:focus,
-.pagination > li > span:hover
-{
+.pagination > li > span:hover {
     color: #5a5a5a;
     background-color: #eee;
     border-color: #ddd;
 }
 
-.pagination > .active > a
-{
+.pagination > .active > a {
     color: white;
     background-color: var(--purple) !Important;
     border: solid 1px var(--purple) !Important;
 }
 
-.pagination > .active > a:hover
-{
+.pagination > .active > a:hover {
     background-color: var(--purple) !Important;
     border: solid 1px var(--purple);
+}
+
+.dataTables_wrapper .dataTables_filter {
+  float:left
 }
