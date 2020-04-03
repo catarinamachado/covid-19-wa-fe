@@ -52,3 +52,26 @@ $.getJSON('http://localhost:8000/overallData', function(data) {
     $("#curedGlobal").html(data.cured);
     $("#deathsGlobal").html(data.deaths);
 });
+
+//Tabela total países
+$(document).ready(function () {
+    $('#dtTable').DataTable({
+        "searching": false,
+        "aaSorting": [],
+        columnDefs: [{
+            orderable: false,
+            targets: 0
+        }],
+        select: {
+        style: 'os',
+        selector: 'td:first-child'
+        }
+    });
+    $('.dataTables_length').addClass('bs-select');
+});
+
+
+
+$("#checkAll").click(function () {
+    $(".check").prop('checked', $(this).prop('checked'));
+});
