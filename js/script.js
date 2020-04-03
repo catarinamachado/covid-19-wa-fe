@@ -43,13 +43,6 @@ var todayDate = (day<10 ? '0' : '') + day + '/' +
                 (month<10 ? '0' : '') + month + '/' +
                 d.getFullYear();
 
-var dayProblem = day - 2;
-
-var todayDateEnglish = month + "/" +
-                       (dayProblem<10 ? '0' : '') + dayProblem + '/' +
-                       d.getFullYear().toString().substr(-2);
-
-console.log(todayDateEnglish);
 $("#data").html(todayDate);
 
 //Tabela dados países
@@ -316,8 +309,6 @@ document.getElementById('table-data').innerHTML = tbody;
 
 //Function activated when checklist is clicked
 function updateDate() {
-    var checkBoxAll = document.getElementById("checkAll");
-
     var arr = $('input:checkbox.check:checked').map(function () {
         return this.id;
     }).get();
@@ -331,25 +322,23 @@ function updateDate() {
         })
     } else {
         var totalInfetados = 0, maisHoje = 0, recuperados = 0, mortes = 0;
-        var todayData, countryKeyArr, apiAccess;
+        var countryKeyArr, apiAccess;
 
         for(countryKeyIdArr in arr){
             countryKeyArr = arr[countryKeyIdArr];
 
             if (countryKeyArr != "checkAll"){
-                apiAccess = 'http://localhost:8000/countryHistory?Country=' + countryKeyArr;
+                apiAccess = 'http://localhost:8000/countryData?Country=' + countryKeyArr;
 
                 $.ajax({
                     url: apiAccess,
                     async: false,
                     dataType: 'json',
                     success: function(data) {
-                        todayData = data[0][todayDateEnglish];
-
-                        totalInfetados += todayData.total_cases;
-                        maisHoje += todayData.new_daily_cases;
-                        recuperados += todayData.total_recoveries;
-                        mortes += todayData.total_deaths;
+                        totalInfetados += data.total;
+                        maisHoje += data.newToday;
+                        recuperados += data.cured;
+                        mortes += data.deaths;
                     }
                 });
             }
@@ -361,8 +350,6 @@ function updateDate() {
         $("#deathsGlobal").html(mortes);
     }
   }
-
-
 
 // Tabela dos Dados globais (default)
 $.getJSON('http://localhost:8000/overallData', function(data) {
