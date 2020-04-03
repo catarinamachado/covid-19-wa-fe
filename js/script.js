@@ -39,21 +39,20 @@ var d = new Date();
 var month = d.getMonth()+1;
 var day = d.getDate();
 
-var output = (day<10 ? '0' : '') + day + '/' +
-             (month<10 ? '0' : '') + month + '/' +
-             d.getFullYear();
+var todayDate = (day<10 ? '0' : '') + day + '/' +
+                (month<10 ? '0' : '') + month + '/' +
+                d.getFullYear();
 
-$("#data").html(output);
+var dayProblem = day - 2;
 
-// Tabela dos Dados globais
-$.getJSON('http://localhost:8000/overallData', function(data) {
-    $("#totalGlobal").html(data.total);
-    $("#hojeGlobal").html(data.newToday);
-    $("#curedGlobal").html(data.cured);
-    $("#deathsGlobal").html(data.deaths);
-});
+var todayDateEnglish = month + "/" +
+                       (dayProblem<10 ? '0' : '') + dayProblem + '/' +
+                       d.getFullYear().toString().substr(-2);
 
-//Tabela total países
+console.log(todayDateEnglish);
+$("#data").html(todayDate);
+
+//Tabela dados países
 $(document).ready(function () {
     $('#dtTable').DataTable({
         dom:"<'myfilter'f>tpi",
@@ -287,14 +286,8 @@ var countries = {
 }
 
 // Preencher tabela total países
-var countryKey;
-var tbody = '';
-var rowHTML = '';
 var totalNumber;
-
-function asignVariable(data){
-    $totalNumber = data;
-}
+var tbody = '', rowHTML = '';
 
 for (countryKey in countries) {
     var countryName = countries[countryKey];
@@ -309,7 +302,7 @@ for (countryKey in countries) {
         }
     });
 
-    rowHTML += '<td><div class="checkbox"><label><input type="checkbox" class="check"></label></div></td>';
+    rowHTML += '<td><div class="checkbox"><label><input type="checkbox" class="check" onchange="updateDate()" id="' + countryKey + '"></label></div></td>';
     rowHTML += '<td class="align-middle">' + countryName + '</td>';
     rowHTML += '<td class="align-middle">' + totalNumber + '</td>';
 
@@ -318,4 +311,63 @@ for (countryKey in countries) {
 }
 
 document.getElementById('table-data').innerHTML = tbody;
+// Fim Preencher tabela total países
 
+
+//Function activated when checklist is clicked
+function updateDate() {
+    var checkBoxAll = document.getElementById("checkAll");
+
+    var arr = $('input:checkbox.check:checked').map(function () {
+        return this.id;
+    }).get();
+
+    if (arr.length == 0) {
+        $.getJSON('http://localhost:8000/overallData', function(data) {
+            $("#totalGlobal").html(data.total);
+            $("#hojeGlobal").html(data.newToday);
+            $("#curedGlobal").html(data.cured);
+            $("#deathsGlobal").html(data.deaths);
+        })
+    } else {
+        var totalInfetados = 0, maisHoje = 0, recuperados = 0, mortes = 0;
+        var todayData, countryKeyArr, apiAccess;
+
+        for(countryKeyIdArr in arr){
+            countryKeyArr = arr[countryKeyIdArr];
+
+            if (countryKeyArr != "checkAll"){
+                apiAccess = 'http://localhost:8000/countryHistory?Country=' + countryKeyArr;
+
+                $.ajax({
+                    url: apiAccess,
+                    async: false,
+                    dataType: 'json',
+                    success: function(data) {
+                        todayData = data[0][todayDateEnglish];
+
+                        totalInfetados += todayData.total_cases;
+                        maisHoje += todayData.new_daily_cases;
+                        recuperados += todayData.total_recoveries;
+                        mortes += todayData.total_deaths;
+                    }
+                });
+            }
+        }
+
+        $("#totalGlobal").html(totalInfetados);
+        $("#hojeGlobal").html(maisHoje);
+        $("#curedGlobal").html(recuperados);
+        $("#deathsGlobal").html(mortes);
+    }
+  }
+
+
+
+// Tabela dos Dados globais (default)
+$.getJSON('http://localhost:8000/overallData', function(data) {
+    $("#totalGlobal").html(data.total);
+    $("#hojeGlobal").html(data.newToday);
+    $("#curedGlobal").html(data.cured);
+    $("#deathsGlobal").html(data.deaths);
+});
