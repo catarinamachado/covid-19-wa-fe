@@ -57,6 +57,7 @@ $.getJSON('http://localhost:8000/overallData', function(data) {
 $(document).ready(function () {
     $('#dtTable').DataTable({
         "searching": false,
+        "lengthChange": false,
         "aaSorting": [],
         columnDefs: [{
             orderable: false,
@@ -65,6 +66,30 @@ $(document).ready(function () {
         select: {
         style: 'os',
         selector: 'td:first-child'
+        },
+        language: {
+            "sProcessing":    "Processando...",
+            "sLengthMenu":    "Mostrar _MENU_ registos",
+            "sZeroRecords":   "Sem resultados",
+            "sEmptyTable":    "Nenhum dados disponível",
+            "sInfo":          "Mostrando _START_ até _END_ em _TOTAL_",
+            "sInfoEmpty":     "Mostrando 0 a 0 em 0",
+            "sInfoFiltered":  "(filtrado de um total de _MAX_ registos)",
+            "sInfoPostFix":   "",
+            "sSearch":        "Procurar:",
+            "sUrl":           "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Carregando...",
+            "oPaginate": {
+                "sFirst": "Primeiro",
+                "sLast": "Último",
+                "sNext": "Seguinte",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Ativar para ordenar a columna de maneira ascendente",
+                "sSortDescending": ": Ativar para ordenar a columna de maneira descendente"
+            }
         }
     });
     $('.dataTables_length').addClass('bs-select');
