@@ -108,6 +108,7 @@ $.ajax({
 
 var totalNumber;
 var tbody = '', rowHTML = '';
+var casesCountry = {}
 
 for (countryKey in countries) {
     var countryName = countries[countryKey];
@@ -119,6 +120,8 @@ for (countryKey in countries) {
         dataType: 'json',
         success: function(data) {
             totalNumber = data.total;
+            curedNumber = data.cured;
+            deathsNumber = data.deaths;
         }
     });
 
@@ -127,7 +130,15 @@ for (countryKey in countries) {
     rowHTML += '<td class="align-middle">' + totalNumber + '</td>';
 
     tbody += '<tr class="m-0">' + rowHTML + '</tr>';
-    rowHTML = ''
+    rowHTML = '';
+
+    var key = countryKey
+    if (!casesCountry[key]) {
+        casesCountry[key] = {}
+    }
+    casesCountry[key].value = totalNumber
+    casesCountry[key].attrs = { "href": "#" }
+    casesCountry[key].tooltip = { "content": "<strong>"+countryName+"</strong><br/>Casos: "+totalNumber+"</br>Recuperados: "+curedNumber+"</br>Mortos: "+deathsNumber+"</br>"}
 }
 
 document.getElementById('table-data').innerHTML = tbody;
@@ -184,4 +195,102 @@ $.getJSON('http://localhost:8000/overallData', function(data) {
     $("#hojeGlobal").html(data.newToday);
     $("#curedGlobal").html(data.cured);
     $("#deathsGlobal").html(data.deaths);
+});
+
+//Colors for map cases
+var caseLegendAreaColors = [
+    {
+        min: 100000,
+        attrs: {
+            fill: "#2A002A"
+        }
+    },
+    {
+        min: 10000,
+        max: 99999, 
+        attrs: {
+            fill: "#800080"
+        }
+    },
+    {
+        min: 1000,
+        max: 9999, 
+        attrs: {
+            fill: "#9932CC"
+        }
+    },
+    {
+        min: 100,
+        max: 999, 
+        attrs: {
+            fill: "#DA70D6"
+        }
+    },
+    {
+        min: 10,
+        max: 99, 
+        attrs: {
+            fill: "#DDA0DD"
+        }
+    },
+    {
+        min: 1,
+        max: 9, 
+        attrs: {
+            fill: "#EE82EE"
+        }
+    },
+    {
+        max: 0, 
+        attrs: {
+            fill: "#D8BFD8"
+        }
+    }
+]
+
+//Show map with colors of cases
+$(function(){
+    $(".cases").mapael({
+        map: {
+            name : "world_countries_miller",
+            zoom: {
+                enabled: true,
+                maxLevel: 10
+            },
+            defaultArea: {
+                attrsHover: {
+                    fill: "#C0C0C0"
+                },
+                attrs : {
+                    stroke : "#fff", 
+                    "stroke-width" : 1
+                }
+            }
+        },
+        legend: {
+            area: {
+                display : false,
+                slices : caseLegendAreaColors
+            },
+        },
+        areas: casesCountry
+    });
+});
+
+//Fuction that resize map
+function resize(){   
+    if($(window).width() > 700) {
+        var h = $(window).width()/3,
+        offsetTop = 60; 
+        $(".mapael .map").css('width', h - offsetTop);
+    } else {
+        $(".mapael .map").css('width', '300px');
+    }
+}
+
+$(document).ready(function(){
+    resize();
+    $(window).on("resize", function(){                      
+        resize();
+    });
 });
