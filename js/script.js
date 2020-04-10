@@ -1,37 +1,156 @@
 //Grafico lines
 var ctxL = document.getElementById("lineChart").getContext('2d');
-var myLineChart = new Chart(ctxL, {
-    type: 'line',
-    data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [{
-            label: "My First dataset",
-            data: [65, 59, 80, 81, 56, 55, 40],
-            backgroundColor: [
-                'rgba(105, 0, 132, .2)',
-            ],
-            borderColor: [
-            'rgba(200, 99, 132, .7)',
-            ],
-            borderWidth: 2
+
+//Desenha linhas do gráfico
+function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
+    var myLineChart = new Chart(ctxL, {
+        type: 'line',
+        data: {
+            labels: LastDays(1, nrDays),
+            datasets: graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList)
         },
-        {
-            label: "My Second dataset",
-            data: [28, 48, 40, 19, 86, 27, 90],
+        options: {
+            responsive: true
+        }
+    });
+}
+
+function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
+    var result = [];
+
+    for(var i = 0; i < countriesKeyList.length; i++) {
+        result.push({
+            label: countriesNameList[i],
+            data: graphicLine(graphicType,countriesKeyList[i],nrDays),
             backgroundColor: [
-            'rgba(0, 137, 132, .2)',
+                'rgba(255, 255, 255, 0)',
             ],
             borderColor: [
-            'rgba(0, 10, 130, .7)',
+                'rgba(0, 10, 130, .7)',
             ],
             borderWidth: 2
-        }
-    ]
-    },
-    options: {
-        responsive: true
+        });
     }
-});
+    return(result);
+}
+
+nrDeDiasSeleccionado = 7;
+tipoDeGraficoSelecionado = "infected";
+
+function initialGraphic(){
+    $.get("https://ipinfo.io", function(response) {
+        visitorCountryKey = [];
+        visitorCountryName = [];
+        visitorCountryKey.push(response.country);
+        visitorCountryName.push(countries[visitorCountryKey]);
+
+        makegraphic(tipoDeGraficoSelecionado, nrDeDiasSeleccionado,visitorCountryName,visitorCountryKey);
+    }, "jsonp");
+}
+
+initialGraphic();
+
+function changeGraphicType(type) {
+    tipoDeGraficoSelecionado = type;
+    updateDate();
+}
+
+function changeGraphicNrDays(nrDays) {
+    nrDeDiasSeleccionado = nrDays;
+    updateDate();
+}
+
+$(".dropdown a").click(function(){
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+  });
+
+//array dos ultimos 7 dias ou 15 dias: formato portugues (type = 1), formato endpoint (type = 2)
+function formatDate(type, date){
+    var dd = date.getDate();
+    var mm = date.getMonth()+1;
+    var yyyy = date.getFullYear();
+
+    if(type == 1) {
+        if(dd<10) {dd='0'+dd}
+        if(mm<10) {mm='0'+mm}
+        date = dd+'/'+mm+'/'+yyyy;
+    } else if(type == 2) {
+        date = mm + "/" +
+            (dd<10 ? '0' : '') + dd + '/' +
+            yyyy.toString().substr(-2);
+    }
+
+    return date;
+ }
+
+function LastDays(type, nr) {
+    var result = [];
+    for (var i=nr-1; i>=0; i--) {
+        var d = new Date();
+        d.setDate(d.getDate() - i);
+
+        result.push(formatDate(type, d));
+    }
+
+    return(result);
+}
+//fim
+
+//buscar os resultados dos infetados
+function graphicLine(graphicType, countryKey, nrDays) {
+    var apiAccess = 'http://localhost:8000/countryHistory?Country=' + countryKey;
+    var result = [];
+    var dayData, total;
+
+    $.ajax({
+        url: apiAccess,
+        async: false,
+        dataType: 'json',
+        success: function(data) {
+            var days = LastDays(2, nrDays);
+
+            for(let i = 0; i < nrDays; i++) {
+                dayyy = days[i];
+                dayData = data[0][dayyy];
+                apiAccess2 = 'http://localhost:8000/countryData?Country=' + countryKey;
+
+                if(graphicType == "infected") {
+                    if(i != nrDays - 1) {
+                        total = dayData.total_cases;
+                    } else { //para conseguir ir buscar os dados de hoje
+                        $.ajax({
+                            url: apiAccess2,
+                            async: false,
+                            dataType: 'json',
+                            success: function(data2) {
+                                total = data2.total;
+                            }
+                        });
+                    }
+                } else if (graphicType == "deaths") {
+                    if(i != nrDays - 1) {
+                        total = dayData.total_deaths;
+                    } else { //para conseguir ir buscar os dados de hoje
+                        $.ajax({
+                            url: apiAccess2,
+                            async: false,
+                            dataType: 'json',
+                            success: function(data2) {
+                                mortes = data2.deaths;
+                            }
+                        });
+                    }
+                }
+
+                result.push(total.toString());
+            }
+        }
+    });
+
+    return (result);
+}
+//fim
 
 // Data atual (Footer)
 var d = new Date();
@@ -151,20 +270,25 @@ function updateDate() {
         return this.id;
     }).get();
 
-    if (arr.length == 0) {
+    //se não tiver nada selecionado, mostra os dados gerais
+    if(arr.length == 0) {
         $.getJSON('http://localhost:8000/overallData', function(data) {
             $("#totalGlobal").html(data.total);
             $("#hojeGlobal").html(data.newToday);
             $("#curedGlobal").html(data.cured);
             $("#deathsGlobal").html(data.deaths);
-        })
+        });
+
+        initialGraphic();
     } else {
         var totalInfetados = 0, maisHoje = 0, recuperados = 0, mortes = 0;
-        var countryKeyArr, apiAccess;
+        var countryKeyArr, apiAccess, countriesNames = [];
 
         for(countryKeyIdArr in arr){
             countryKeyArr = arr[countryKeyIdArr];
+            countriesNames.push(countries[countryKeyArr]);
 
+            //para acumular checklists
             if (countryKeyArr != "checkAll"){
                 apiAccess = 'http://localhost:8000/countryData?Country=' + countryKeyArr;
 
@@ -179,8 +303,11 @@ function updateDate() {
                         mortes += data.deaths;
                     }
                 });
+
             }
         }
+
+        makegraphic(tipoDeGraficoSelecionado, nrDeDiasSeleccionado, countriesNames, arr);
 
         $("#totalGlobal").html(totalInfetados);
         $("#hojeGlobal").html(maisHoje);
