@@ -17,8 +17,6 @@
     <!-- Custom styles -->
     <link rel="stylesheet" href="css/style.css">
     <!-- Data table -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mapael/2.2.0/js/jquery.mapael.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/jquery-mapael@2.2.0/js/jquery.mapael.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
 </head>
 
@@ -58,15 +56,30 @@
                     <div class="row">
                         <div class="col-md-12">
                             <canvas id="lineChart"></canvas>
-
+                        </div>
+                    </div>
+                    <div class="row space-top-4">
+                        <div class="col-md-6">
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Total infetados/dia
+                                <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Mortes/dia</a>
-                                <a class="dropdown-item" href="#">Recuperados/dia</a>
-                                <a class="dropdown-item" href="#">Taxa de Crescimento/dia</a>
+                                    <a class="dropdown-item" data-value="infected" onclick="changeGraphicType('infected')">Total infetados/dia</a>
+                                    <a class="dropdown-item" data-value="deaths" onclick="changeGraphicType('deaths')">Mortes/dia</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownNrDays" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Previsão 7 dias
+                                <span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownNrDays">
+                                    <a class="dropdown-item" data-value="7dias" onclick="changeGraphicNrDays(7)">Previsão 7 dias</a>
+                                    <a class="dropdown-item" data-value="15dias" onclick="changeGraphicNrDays(15)">Previsão 15 dias</a>
                                 </div>
                             </div>
                         </div>
