@@ -180,3 +180,16 @@ input[type="checkbox"] {
 .mapael .zoomReset { bottom: 10px; }
 .mapael .zoomIn { bottom: 30px; }
 .mapael .zoomOut { bottom: 50px; }
+
+#page {
+  display: none;
+}
+
+#progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}

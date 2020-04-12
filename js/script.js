@@ -227,7 +227,9 @@ $.ajax({
 
 var totalNumber;
 var tbody = '', rowHTML = '';
-var casesCountry = {}
+var casesCountry = {};
+
+$('#progress').show();
 
 for (countryKey in countries) {
     var countryName = countries[countryKey];
@@ -259,6 +261,9 @@ for (countryKey in countries) {
     casesCountry[key].attrs = { "href": "#" }
     casesCountry[key].tooltip = { "content": "<strong>"+countryName+"</strong><br/>Casos: "+totalNumber+"</br>Recuperados: "+curedNumber+"</br>Mortos: "+deathsNumber+"</br>"}
 }
+
+$('#progress').hide();
+$('#page').show()
 
 document.getElementById('table-data').innerHTML = tbody;
 // Fim Preencher tabela total países
