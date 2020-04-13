@@ -31,11 +31,13 @@ function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
             borderWidth: 2
         });
     }
+
     return(result);
 }
 
+nrDeDiasTotal = 30;
 nrDeDiasSeleccionado = 7;
-tipoDeGraficoSelecionado = "infected";
+tipoDeGraficoSelecionado = "Total_Cases";
 
 function initialGraphic(){
     $.get("https://ipinfo.io", function(response) {
@@ -115,7 +117,7 @@ function graphicLine(graphicType, countryKey, nrDays) {
                 dayData = data[0][dayyy];
                 apiAccess2 = 'http://localhost:8000/countryData?Country=' + countryKey;
 
-                if(graphicType == "infected") {
+                if(graphicType == "Total_Cases") {
                     if(i != nrDays - 1) {
                         total = dayData.total_cases;
                     } else { //para conseguir ir buscar os dados de hoje
@@ -128,7 +130,7 @@ function graphicLine(graphicType, countryKey, nrDays) {
                             }
                         });
                     }
-                } else if (graphicType == "deaths") {
+                } else if (graphicType == "Total_Deaths") {
                     if(i != nrDays - 1) {
                         total = dayData.total_deaths;
                     } else { //para conseguir ir buscar os dados de hoje
