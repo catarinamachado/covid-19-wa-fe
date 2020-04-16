@@ -35,18 +35,13 @@ function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
     return(result);
 }
 
-function chatisse() {
-    var apiAccess = 'localhost:5000/predictions?days=' + nrDeDiasSeleccionado + '&field=' + tipoDeGraficoSelecionado + '&country=PT,IT'
-    
-}
-
-nrDeDiasTotal = 30;
+nrDeDiasTotal = 7;
 nrDeDiasSeleccionado = 7;
 tipoDeGraficoSelecionado = "Total_Cases";
 
-//supostamente vai buscar e dá parse do csv
+//pedido previsão e dá parse do csv
 $(document).ready(function() {
-    var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasSeleccionado + '&field=' + tipoDeGraficoSelecionado + '&country=PT'
+    var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasSeleccionado + '&field=' + tipoDeGraficoSelecionado + '&country=PT';
     $.ajax({
         type: "GET",
         url: apiAccess,
@@ -58,22 +53,21 @@ $(document).ready(function() {
 });
 
 function processData(allText) {
-    var record_num = 4;  // or however many elements there are in each row
     var allTextLines = allText.split(/\r\n|\n/);
-    var entries = allTextLines[0].split(',');
-    var lines = [];
+    var headers = allTextLines[0].split(',');
 
-    var headings = entries.splice(0,record_num);
-    while (entries.length>0) {
-        var tarr = [];
-        for (var j=0; j<record_num; j++) {
-            tarr.push(headings[j]+":"+entries.shift());
-        }
-        lines.push(tarr);
+    var matrix = [];
+    for(var i=0; i<headers.length; i++) {
+        matrix[i] = new Array(allTextLines.length);
     }
 
-    console.log(lines);
-    alert(lines);
+    for (var i=0; i<allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+        for (var j=0; j<headers.length; j++) {
+            matrix[j].push(data[j]);
+        }
+    }
+    console.log(matrix);
 }
 //fim
 
@@ -84,7 +78,7 @@ function initialGraphic(){
         visitorCountryKey.push(response.country);
         visitorCountryName.push(countries[visitorCountryKey]);
 
-        makegraphic(tipoDeGraficoSelecionado, nrDeDiasSeleccionado,visitorCountryName,visitorCountryKey);
+        makegraphic(tipoDeGraficoSelecionado, nrDeDiasTotal,visitorCountryName,visitorCountryKey);
     }, "jsonp");
 }
 
@@ -96,7 +90,7 @@ function changeGraphicType(type) {
 }
 
 function changeGraphicNrDays(nrDays) {
-    nrDeDiasSeleccionado = nrDays;
+    nrDeDiasTotal = nrDays;
     updateDate();
 }
 
@@ -352,7 +346,7 @@ function updateDate() {
             }
         }
 
-        makegraphic(tipoDeGraficoSelecionado, nrDeDiasSeleccionado, countriesNames, arr);
+        makegraphic(tipoDeGraficoSelecionado, nrDeDiasTotal, countriesNames, arr);
 
         $("#totalGlobal").html(totalInfetados);
         $("#hojeGlobal").html(maisHoje);
