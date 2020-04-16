@@ -67,7 +67,7 @@ function processData(allText) {
             matrix[j].push(data[j]);
         }
     }
-    console.log(matrix);
+    return matrix;
 }
 //fim
 
