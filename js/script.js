@@ -2,10 +2,16 @@
 var ctxL = document.getElementById("lineChart").getContext('2d');
 
 nrDeDiasTotal = 30;
-nrDeDiasSeleccionado = 7;
+nrDeDiasPrevisao = 7;
 tipoDeGraficoSelecionado = "Total_Cases";
 
-//Desenha o gráfico
+//Desenha o gráfico ----- graphicType, countriesNameList, 
+function makegraph(countriesKeyList) {
+    var globalMatrix = makePrevision(countriesKeyList);
+}
+
+makegraph(["PT"]);
+
 function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
     var myLineChart = new Chart(ctxL, {
         type: 'line',
@@ -98,34 +104,30 @@ function graphicLine(graphicType, countryKey, nrDays) {
 //pedido previsão e dá parse do csv
 function makePrevision(countriesKeyList) {
     countriesKeyListComma = document.write(countriesKeyList.join(","));
-    $(document).ready(function() {
-        var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasSeleccionado + '&field=' + tipoDeGraficoSelecionado + '&country=' + countriesKeyList;
-        $.ajax({
-            type: "GET",
-            url: apiAccess,
-            dataType: "text",
-            success: function(data) {
-                processData(data);
-            }
-        });
-    });
-}
-
-function processData(allText) {
-    var allTextLines = allText.split(/\r\n|\n/);
-    var headers = allTextLines[0].split(',');
-
+    var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasPrevisao + '&field=' + tipoDeGraficoSelecionado + '&country=PT'; //FIXME
     var matrix = [];
-    for(var i=0; i<headers.length; i++) {
-        matrix[i] = new Array(allTextLines.length);
-    }
 
-    for (var i=0; i<allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        for (var j=0; j<headers.length; j++) {
-            matrix[j].push(data[j]);
+    $.ajax({
+        type: "GET",
+        url: apiAccess,
+        dataType: "text",
+        success: function(allText) {
+            var allTextLines = allText.split(/\r\n|\n/);
+            var headers = allTextLines[0].split(',');
+        
+            for(var i=0; i<headers.length; i++) {
+                matrix[i] = new Array(allTextLines.length);
+            }
+        
+            for (var i=0; i<allTextLines.length; i++) {
+                var data = allTextLines[i].split(',');
+                for (var j=0; j<headers.length; j++) {
+                    matrix[j].push(data[j]);
+                }
+            }
         }
-    }
+    });
+
     return matrix;
 }
 //fim
