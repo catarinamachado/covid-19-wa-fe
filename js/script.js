@@ -1,7 +1,11 @@
 //Grafico lines
 var ctxL = document.getElementById("lineChart").getContext('2d');
 
-//Desenha linhas do gráfico
+nrDeDiasTotal = 30;
+nrDeDiasSeleccionado = 7;
+tipoDeGraficoSelecionado = "Total_Cases";
+
+//Desenha o gráfico
 function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
     var myLineChart = new Chart(ctxL, {
         type: 'line',
@@ -15,6 +19,7 @@ function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
     });
 }
 
+//Desenha as linhas do gráfico
 function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
     var result = [];
 
@@ -34,102 +39,6 @@ function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
 
     return(result);
 }
-
-nrDeDiasTotal = 7;
-nrDeDiasSeleccionado = 7;
-tipoDeGraficoSelecionado = "Total_Cases";
-
-//pedido previsão e dá parse do csv
-$(document).ready(function() {
-    var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasSeleccionado + '&field=' + tipoDeGraficoSelecionado + '&country=PT';
-    $.ajax({
-        type: "GET",
-        url: apiAccess,
-        dataType: "text",
-        success: function(data) {
-            processData(data);
-        }
-     });
-});
-
-function processData(allText) {
-    var allTextLines = allText.split(/\r\n|\n/);
-    var headers = allTextLines[0].split(',');
-
-    var matrix = [];
-    for(var i=0; i<headers.length; i++) {
-        matrix[i] = new Array(allTextLines.length);
-    }
-
-    for (var i=0; i<allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        for (var j=0; j<headers.length; j++) {
-            matrix[j].push(data[j]);
-        }
-    }
-    return matrix;
-}
-//fim
-
-function initialGraphic(){
-    $.get("https://ipinfo.io", function(response) {
-        visitorCountryKey = [];
-        visitorCountryName = [];
-        visitorCountryKey.push(response.country);
-        visitorCountryName.push(countries[visitorCountryKey]);
-
-        makegraphic(tipoDeGraficoSelecionado, nrDeDiasTotal,visitorCountryName,visitorCountryKey);
-    }, "jsonp");
-}
-
-initialGraphic();
-
-function changeGraphicType(type) {
-    tipoDeGraficoSelecionado = type;
-    updateDate();
-}
-
-function changeGraphicNrDays(nrDays) {
-    nrDeDiasTotal = nrDays;
-    updateDate();
-}
-
-$(".dropdown a").click(function(){
-    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
-    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-  });
-
-//array dos ultimos 7 dias ou 15 dias: formato portugues (type = 1), formato endpoint (type = 2)
-function formatDate(type, date){
-    var dd = date.getDate();
-    var mm = date.getMonth()+1;
-    var yyyy = date.getFullYear();
-
-    if(type == 1) {
-        if(dd<10) {dd='0'+dd}
-        if(mm<10) {mm='0'+mm}
-        date = dd+'/'+mm+'/'+yyyy;
-    } else if(type == 2) {
-        date = mm + "/" +
-            (dd<10 ? '0' : '') + dd + '/' +
-            yyyy.toString().substr(-2);
-    }
-
-    return date;
- }
-
-function LastDays(type, nr) {
-    var result = [];
-    for (var i=nr-1; i>=0; i--) {
-        var d = new Date();
-        d.setDate(d.getDate() - i);
-
-        result.push(formatDate(type, d));
-    }
-
-    return(result);
-}
-//fim
 
 //buscar os resultados dos infetados
 function graphicLine(graphicType, countryKey, nrDays) {
@@ -185,6 +94,102 @@ function graphicLine(graphicType, countryKey, nrDays) {
     return (result);
 }
 //fim
+
+//pedido previsão e dá parse do csv
+function makePrevision(countriesKeyList) {
+    countriesKeyListComma = document.write(countriesKeyList.join(","));
+    $(document).ready(function() {
+        var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasSeleccionado + '&field=' + tipoDeGraficoSelecionado + '&country=' + countriesKeyList;
+        $.ajax({
+            type: "GET",
+            url: apiAccess,
+            dataType: "text",
+            success: function(data) {
+                processData(data);
+            }
+        });
+    });
+}
+
+function processData(allText) {
+    var allTextLines = allText.split(/\r\n|\n/);
+    var headers = allTextLines[0].split(',');
+
+    var matrix = [];
+    for(var i=0; i<headers.length; i++) {
+        matrix[i] = new Array(allTextLines.length);
+    }
+
+    for (var i=0; i<allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+        for (var j=0; j<headers.length; j++) {
+            matrix[j].push(data[j]);
+        }
+    }
+    return matrix;
+}
+//fim
+
+function initialGraphic(){
+    $.get("https://ipinfo.io", function(response) {
+        visitorCountryKey = [];
+        visitorCountryName = [];
+        visitorCountryKey.push(response.country);
+        visitorCountryName.push(countries[visitorCountryKey]);
+
+        makegraphic(tipoDeGraficoSelecionado, nrDeDiasTotal, visitorCountryName, visitorCountryKey);
+    }, "jsonp");
+}
+
+initialGraphic();
+
+function changeGraphicType(type) {
+    tipoDeGraficoSelecionado = type;
+    updateDate();
+}
+
+function changeGraphicNrDays(nrDays) {
+    nrDeDiasTotal = nrDays;
+    updateDate();
+}
+
+$(".dropdown a").click(function(){
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+  });
+
+//array dos ultimos 7 dias ou 15 dias: formato portugues (type = 1), formato endpoint (type = 2)
+function formatDate(type, date){
+    var dd = date.getDate();
+    var mm = date.getMonth()+1;
+    var yyyy = date.getFullYear();
+
+    if(type == 1) {
+        if(dd<10) {dd='0'+dd}
+        if(mm<10) {mm='0'+mm}
+        date = dd+'/'+mm+'/'+yyyy;
+    } else if(type == 2) {
+        date = mm + "/" +
+            (dd<10 ? '0' : '') + dd + '/' +
+            yyyy.toString().substr(-2);
+    }
+
+    return date;
+ }
+
+function LastDays(type, nr) {
+    var result = [];
+    for (var i=nr-1; i>=0; i--) {
+        var d = new Date();
+        d.setDate(d.getDate() - i);
+
+        result.push(formatDate(type, d));
+    }
+
+    return(result);
+}
+//fim
+
 
 // Data atual (Footer)
 var d = new Date();
