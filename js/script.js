@@ -5,7 +5,7 @@ nrDeDiasTotal = 30;
 nrDeDiasPrevisao = 7;
 tipoDeGraficoSelecionado = "Total_Cases";
 
-//Desenha o gráfico ----- graphicType, countriesNameList,
+//get days da matriz das previsõe
 function getDays(countriesKeyList) { //mudar para aqui o nr de dias?
     var globalMatrix = makePrevision(countriesKeyList);
     var datas = [];
@@ -37,15 +37,41 @@ function getDays(countriesKeyList) { //mudar para aqui o nr de dias?
 
 }
 
+
+function getRowPrevisao(countriesKeyList) { //mudar para aqui o nr de dias?
+    var globalMatrix = makePrevision(countriesKeyList);
+    var algNameKey, algName, algKey;
+
+    for (var i = 1; i < globalMatrix.length; i++) {
+        var innerArrayLength = globalMatrix[i].length;
+        var row = [];
+        for (var j = 0; j < innerArrayLength; j++) {
+            var item = globalMatrix[i][j];
+            if(item != undefined){
+                row.push(item);
+            }
+        }
+        algNameKey = row[0];
+        algName = algNameKey.substring(0, algNameKey.length - 2);
+        algKey = algNameKey.slice(-2);
+        console.log(algName);
+        console.log(algKey);
+        row.shift();
+    }
+
+}
+
+console.log(getRowPrevisao(["PT","IT"]));
+
 console.log(getDays(["PT","IT"]));
 
 
 function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
-    //fazer aqui o pedido e depois aproveitar a matrix para as duas funcoes
+    //fazer aqui o pedido e depois aproveitar a matrix para as duas funcoes FIXME
     var myLineChart = new Chart(ctxL, {
         type: 'line',
         data: {
-            labels: LastDays(1, nrDays),
+            labels: LastDays(1, nrDays+nrDeDiasPrevisao),
             datasets: graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList)
         },
         options: {
@@ -72,6 +98,9 @@ function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
             borderWidth: 2
         });
     }
+
+
+    //colocar aqui o codigo das previsoes
 
     return(result);
 }
@@ -354,7 +383,7 @@ function updateDate() {
             $("#deathsGlobal").html(data.deaths);
         });
 
-        //initialGraphic();
+        initialGraphic();
     } else {
         var totalInfetados = 0, maisHoje = 0, recuperados = 0, mortes = 0;
         var countryKeyArr, apiAccess, countriesNames = [];
