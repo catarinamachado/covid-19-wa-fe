@@ -37,13 +37,14 @@ function getDays(countriesKeyList) { //mudar para aqui o nr de dias?
 
 }
 
-
-function getRowPrevisao(countriesKeyList) { //mudar para aqui o nr de dias?
+/*
+function getPrevisoes(countriesKeyList) { //mudar para aqui o nr de dias?
     var globalMatrix = makePrevision(countriesKeyList);
     var algNameKey, algName, algKey;
 
     for (var i = 1; i < globalMatrix.length; i++) {
         var innerArrayLength = globalMatrix[i].length;
+        console.log(innerArrayLength);
         var row = [];
         for (var j = 0; j < innerArrayLength; j++) {
             var item = globalMatrix[i][j];
@@ -57,22 +58,26 @@ function getRowPrevisao(countriesKeyList) { //mudar para aqui o nr de dias?
         console.log(algName);
         console.log(algKey);
         row.shift();
+
+        console.log(row);
     }
+
 
 }
 
-console.log(getRowPrevisao(["PT","IT"]));
+getPrevisoes(["PT","IT"]);
 
 console.log(getDays(["PT","IT"]));
-
+*/
 
 function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
-    //fazer aqui o pedido e depois aproveitar a matrix para as duas funcoes FIXME
+    var globalMatrix = makePrevision(countriesKeyList);
+
     var myLineChart = new Chart(ctxL, {
         type: 'line',
         data: {
             labels: LastDays(1, nrDays+nrDeDiasPrevisao),
-            datasets: graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList)
+            datasets: graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList, globalMatrix)
         },
         options: {
             responsive: true
@@ -82,8 +87,9 @@ function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
 }
 
 //Desenha as linhas do gráfico
-function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
+function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList, globalMatrix){
     var result = [];
+    var algNameKey, algName, algKey;
 
     for(var i = 0; i < countriesKeyList.length; i++) {
         result.push({
@@ -99,8 +105,36 @@ function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList){
         });
     }
 
+    var innerArrayLength = globalMatrix[0].length;
+    for (var i = 1; i < globalMatrix.length; i++) {
+        var row = [];
+        for (var j = 0; j < innerArrayLength; j++) {
+            var item = globalMatrix[i][j];
+            if(item != undefined){
+                row.push(item);
+            }
+        }
+        algNameKey = row[0];
+        algName = algNameKey.substring(0, algNameKey.length - 2);
+        algKey = algNameKey.slice(-2);
+        row.shift();
 
-    //colocar aqui o codigo das previsoes
+        for(var un=0; un<nrDays; un++) {
+            row.unshift('');
+        }
+
+        result.push({
+            label: algNameKey,
+            data: row,
+            backgroundColor: [
+                'rgba(255, 255, 255, 0)',
+            ],
+            borderColor: [
+                'rgba(200, 99, 132, .7)',
+            ],
+            borderWidth: 2
+        });
+    }
 
     return(result);
 }
@@ -329,6 +363,7 @@ var tbody = '', rowHTML = '';
 var casesCountry = {};
 
 $('#progress').show();
+
 
 for (countryKey in countries) {
     var countryName = countries[countryKey];
