@@ -6,7 +6,7 @@ nrDeDiasPrevisao = 7;
 tipoDeGraficoSelecionado = "Total_Cases";
 
 //Desenha o gráfico ----- graphicType, countriesNameList,
-function makegraph(countriesKeyList) {
+function getDays(countriesKeyList) { //mudar para aqui o nr de dias?
     var globalMatrix = makePrevision(countriesKeyList);
     var datas = [];
 
@@ -19,7 +19,8 @@ function makegraph(countriesKeyList) {
     }
 
     datas.shift();
-    console.log(datas);
+    datas.pop();
+    return datas;
 
     /*
     // loop the outer array
@@ -36,9 +37,11 @@ function makegraph(countriesKeyList) {
 
 }
 
-makegraph(["PT"]);
+console.log(getDays(["PT","IT"]));
+
 
 function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
+    //fazer aqui o pedido e depois aproveitar a matrix para as duas funcoes
     var myLineChart = new Chart(ctxL, {
         type: 'line',
         data: {
@@ -130,9 +133,8 @@ function graphicLine(graphicType, countryKey, nrDays) {
 
 //pedido previsão e dá parse do csv
 function makePrevision(countriesKeyList) {
-
-    countriesKeyListComma = document.write(countriesKeyList.join(","));
-    var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasPrevisao + '&field=' + tipoDeGraficoSelecionado + '&country=PT'; //FIXME
+    countriesKeyListComma = countriesKeyList.join(",");
+    var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasPrevisao + '&field=' + tipoDeGraficoSelecionado + '&country=' + countriesKeyListComma;
     var matrix = [];
 
     jQuery.ajax({
