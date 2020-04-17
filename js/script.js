@@ -58,7 +58,7 @@ function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList, 
         }
 
         result.push({
-            label: countries[algNameKey] + " - " + algName,
+            label: countries[algKey] + " - " + algName,
             data: row,
             backgroundColor: [
                 'rgba(255, 255, 255, 0)',
@@ -177,7 +177,7 @@ function changeGraphicType(type) {
 }
 
 function changeGraphicNrDays(nrDays) {
-    nrDeDiasTotal = nrDays;
+    nrDeDiasPrevisao = nrDays;
     updateDate();
 }
 
@@ -222,7 +222,6 @@ function getDays(type, daysBack, daysAhead) {
         result.push(formatDate(type, d));
     }
 
-    console.log(result);
     return(result);
 }
 //fim
