@@ -120,6 +120,12 @@ function graphicLine(graphicType, countryKey, nrDays) {
                   //          }
                   //      });
                   //  }
+                } else if (graphicType == 'Total_Recoveries') {
+                    total = dayData.total_recoveries;
+                } else if (graphicType == 'New_Daily_Cases') {
+                    total = dayData.new_daily_cases;
+                } else if (graphicType == 'New_Daily_Deaths') {
+                    total = dayData.new_daily_deaths;
                 }
 
                 result.push(total.toString());
