@@ -5,85 +5,19 @@ nrDeDiasTotal = 30;
 nrDeDiasPrevisao = 7;
 tipoDeGraficoSelecionado = "Total_Cases";
 
-//get days da matriz das previsõe
-function getDays(countriesKeyList) { //mudar para aqui o nr de dias?
-    var globalMatrix = makePrevision(countriesKeyList);
-    var datas = [];
-
-    var innerArrayLength = globalMatrix[0].length;
-    for (var j = 0; j < innerArrayLength; j++) {
-        var data = globalMatrix[0][j];
-        if(data != undefined) {
-            datas.push(data);
-        }
-    }
-
-    datas.shift();
-    datas.pop();
-    return datas;
-
-    /*
-    // loop the outer array
-    for (var i = 0; i < globalMatrix.length; i++) {
-        // get the size of the inner array
-        var innerArrayLength = globalMatrix[i].length;
-        // loop the inner array
-        for (var j = 0; j < innerArrayLength; j++) {
-            console.log('[' + i + ',' + j + '] = ' + globalMatrix[i][j]);
-        }
-    } */
-
-    //var datas = ...
-
-}
-
-/*
-function getPrevisoes(countriesKeyList) { //mudar para aqui o nr de dias?
-    var globalMatrix = makePrevision(countriesKeyList);
-    var algNameKey, algName, algKey;
-
-    for (var i = 1; i < globalMatrix.length; i++) {
-        var innerArrayLength = globalMatrix[i].length;
-        console.log(innerArrayLength);
-        var row = [];
-        for (var j = 0; j < innerArrayLength; j++) {
-            var item = globalMatrix[i][j];
-            if(item != undefined){
-                row.push(item);
-            }
-        }
-        algNameKey = row[0];
-        algName = algNameKey.substring(0, algNameKey.length - 2);
-        algKey = algNameKey.slice(-2);
-        console.log(algName);
-        console.log(algKey);
-        row.shift();
-
-        console.log(row);
-    }
-
-
-}
-
-getPrevisoes(["PT","IT"]);
-
-console.log(getDays(["PT","IT"]));
-*/
-
 function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
     var globalMatrix = makePrevision(countriesKeyList);
 
     var myLineChart = new Chart(ctxL, {
         type: 'line',
         data: {
-            labels: LastDays(1, nrDays+nrDeDiasPrevisao),
+            labels: getDays(1, nrDays, nrDeDiasPrevisao),
             datasets: graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList, globalMatrix)
         },
         options: {
             responsive: true
         }
     });
-
 }
 
 //Desenha as linhas do gráfico
@@ -120,11 +54,11 @@ function graphicLines(graphicType, nrDays, countriesNameList, countriesKeyList, 
         row.shift();
 
         for(var un=0; un<nrDays; un++) {
-            row.unshift('');
+            row.unshift(null);
         }
 
         result.push({
-            label: algNameKey,
+            label: countries[algNameKey] + " - " + algName,
             data: row,
             backgroundColor: [
                 'rgba(255, 255, 255, 0)',
@@ -150,7 +84,7 @@ function graphicLine(graphicType, countryKey, nrDays) {
         async: false,
         dataType: 'json',
         success: function(data) {
-            var days = LastDays(2, nrDays);
+            var days = getDays(2, nrDays, 0);
 
             for(let i = 0; i < nrDays; i++) {
                 dayyy = days[i];
@@ -158,31 +92,31 @@ function graphicLine(graphicType, countryKey, nrDays) {
                 apiAccess2 = 'http://localhost:8000/countryData?Country=' + countryKey;
 
                 if(graphicType == "Total_Cases") {
-                    if(i != nrDays - 1) {
+                  //  if(i != nrDays - 1) {
                         total = dayData.total_cases;
-                    } else { //para conseguir ir buscar os dados de hoje
-                        $.ajax({
-                            url: apiAccess2,
-                            async: false,
-                            dataType: 'json',
-                            success: function(data2) {
-                                total = data2.total;
-                            }
-                        });
-                    }
+                  //  } else { //para conseguir ir buscar os dados de hoje
+                  //      $.ajax({
+                  //          url: apiAccess2,
+                  //          async: false,
+                  //          dataType: 'json',
+                  //          success: function(data2) {
+                  //              total = data2.total;
+                  //          }
+                  //      });
+                  //  }
                 } else if (graphicType == "Total_Deaths") {
-                    if(i != nrDays - 1) {
+                  //  if(i != nrDays - 1) {
                         total = dayData.total_deaths;
-                    } else { //para conseguir ir buscar os dados de hoje
-                        $.ajax({
-                            url: apiAccess2,
-                            async: false,
-                            dataType: 'json',
-                            success: function(data2) {
-                                mortes = data2.deaths;
-                            }
-                        });
-                    }
+                  //  } else { //para conseguir ir buscar os dados de hoje
+                  //      $.ajax({
+                  //          url: apiAccess2,
+                  //          async: false,
+                  //          dataType: 'json',
+                  //          success: function(data2) {
+                  //              mortes = data2.deaths;
+                  //          }
+                  //      });
+                  //  }
                 }
 
                 result.push(total.toString());
@@ -271,15 +205,24 @@ function formatDate(type, date){
     return date;
  }
 
-function LastDays(type, nr) {
+function getDays(type, daysBack, daysAhead) {
     var result = [];
-    for (var i=nr-1; i>=0; i--) {
+
+    for (var i=daysBack; i>0; i--) {
         var d = new Date();
         d.setDate(d.getDate() - i);
 
         result.push(formatDate(type, d));
     }
 
+    for (var i=0; i<daysAhead; i++) {
+        var d = new Date();
+        d.setDate(d.getDate() + i);
+
+        result.push(formatDate(type, d));
+    }
+
+    console.log(result);
     return(result);
 }
 //fim
