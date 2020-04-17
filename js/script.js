@@ -5,9 +5,35 @@ nrDeDiasTotal = 30;
 nrDeDiasPrevisao = 7;
 tipoDeGraficoSelecionado = "Total_Cases";
 
-//Desenha o gráfico ----- graphicType, countriesNameList, 
+//Desenha o gráfico ----- graphicType, countriesNameList,
 function makegraph(countriesKeyList) {
     var globalMatrix = makePrevision(countriesKeyList);
+    var datas = [];
+
+    var innerArrayLength = globalMatrix[0].length;
+    for (var j = 0; j < innerArrayLength; j++) {
+        var data = globalMatrix[0][j];
+        if(data != undefined) {
+            datas.push(data);
+        }
+    }
+
+    datas.shift();
+    console.log(datas);
+
+    /*
+    // loop the outer array
+    for (var i = 0; i < globalMatrix.length; i++) {
+        // get the size of the inner array
+        var innerArrayLength = globalMatrix[i].length;
+        // loop the inner array
+        for (var j = 0; j < innerArrayLength; j++) {
+            console.log('[' + i + ',' + j + '] = ' + globalMatrix[i][j]);
+        }
+    } */
+
+    //var datas = ...
+
 }
 
 makegraph(["PT"]);
@@ -23,6 +49,7 @@ function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
             responsive: true
         }
     });
+
 }
 
 //Desenha as linhas do gráfico
@@ -103,20 +130,19 @@ function graphicLine(graphicType, countryKey, nrDays) {
 
 //pedido previsão e dá parse do csv
 function makePrevision(countriesKeyList) {
+
     countriesKeyListComma = document.write(countriesKeyList.join(","));
     var apiAccess = 'http://localhost:5000/predictions?days=' + nrDeDiasPrevisao + '&field=' + tipoDeGraficoSelecionado + '&country=PT'; //FIXME
     var matrix = [];
 
-    $.ajax({
-        type: "GET",
+    jQuery.ajax({
         url: apiAccess,
-        dataType: "text",
         success: function(allText) {
             var allTextLines = allText.split(/\r\n|\n/);
             var headers = allTextLines[0].split(',');
-        
-            for(var i=0; i<headers.length; i++) {
-                matrix[i] = new Array(allTextLines.length);
+            
+            for(var j=0; j<headers.length; j++) {
+                matrix[j] = new Array(allTextLines.length);
             }
         
             for (var i=0; i<allTextLines.length; i++) {
@@ -125,8 +151,9 @@ function makePrevision(countriesKeyList) {
                     matrix[j].push(data[j]);
                 }
             }
-        }
-    });
+        },
+        async:false
+      });
 
     return matrix;
 }
@@ -325,7 +352,7 @@ function updateDate() {
             $("#deathsGlobal").html(data.deaths);
         });
 
-        initialGraphic();
+        //initialGraphic();
     } else {
         var totalInfetados = 0, maisHoje = 0, recuperados = 0, mortes = 0;
         var countryKeyArr, apiAccess, countriesNames = [];
