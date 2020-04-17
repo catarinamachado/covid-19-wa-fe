@@ -7,6 +7,12 @@ tipoDeGraficoSelecionado = "Total_Cases";
 
 function makegraphic(graphicType, nrDays, countriesNameList, countriesKeyList){
     var globalMatrix = makePrevision(countriesKeyList);
+    document.getElementById("graph-container").innerHTML = '&nbsp;';
+    document.getElementById("graph-container").innerHTML = '<canvas id="lineChart"></canvas>';
+    var ctxL = document.getElementById("lineChart").getContext("2d");
+
+    //$('#lineChart').remove();
+    //$('#graph-container').append('<canvas id="lineChart"><canvas>');
 
     var myLineChart = new Chart(ctxL, {
         type: 'line',
